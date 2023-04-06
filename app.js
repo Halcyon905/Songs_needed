@@ -14,11 +14,25 @@ app.use(bodyParser.urlencoded({extended: false}));
 async function searchSong(doc){
     songs_needed = await client.db("Songs_Needed");
     song = songs_needed.collection("Song");
+    artistCollection = songs_needed.collection("Artist");
+    genreCollection = songs_needed.collection("Genre");
 
     songs = await song.aggregate([{$match: doc}]);
 
     var dict = {};
     for await (const song of songs) {
+        var artist = []
+        var genre = []
+        for await (const aid of song["A_ID"]) {
+            var ls = await artistCollection.findOne({A_ID: aid});
+            artist.push(ls.A_Name);
+        }
+        for await (const gid of song["G_ID"]) {
+            var ls = await genreCollection.findOne({G_ID: gid})
+            genre.push(ls.G_name)
+        }
+        song["A_Name"] = artist
+        song["G_Name"] = genre
         dict[song.S_name] = song;
     }
     return dict;
@@ -48,6 +62,7 @@ app.post ("/search/formsave", async function(req, res) {
 
     result = await searchSong(query);
     res.render("results", {result})
+    console.log(result)
 });
 
 app.post ("/update", async function(req, res){
@@ -117,6 +132,10 @@ app.post("/delete", async function(req, res) {
     await songCollection.deleteOne({S_ID: req.body.songID})
 
     res.redirect("/search")
+})
+
+app.post("/insert", async function(req, res){
+
 })
 
 

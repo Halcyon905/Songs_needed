@@ -7,10 +7,23 @@
         <% if ( Object.keys(result).length > 0 ) { %>
         <% for (const key in result){%>
             <div class="w-full ring-1 ring-cyan-800 rounded-lg">
-                <div class="m-2 pt-3">
-                    <div class="text-2xl font-primary"><%= key %></div>
-                    <div class="text-xl">Released year:  <%= result[key].Year %></div>
-                    <div class="text-xl">Album: <%= result[key].album %> </div>
+                <div class="m-2 pt-3 text-xl">
+                    <!--Song Title-->
+                    <div class="text-3xl font-primary"><%= key %></div>
+                    <!--Genres-->
+                    <div class="flex flex-row">
+                        <% for (const g in result[key].G_Name) { %>
+                            <div class="text-base ring-1 ring-cyan-600 text-cyan-600 rounded-xl px-2 mr-2">
+                                <%= result[key].G_Name[g] %>
+                            </div>
+                        <% } %>
+                    </div>
+                    <!--Artist-->
+                    <div><span class="font-bold">Artist:</span> <%= result[key].A_Name %></div>
+                    <!--Released year-->
+                    <div><span class="font-bold">Released year:</span>  <%= result[key].Year %></div>
+                    <!--Album name-->
+                    <div><span class="font-bold">Album:</span> <%= result[key].album %> </div>
                 </div>
                 <div class="flex flex-row">
                     <form method="post" action="/update">
