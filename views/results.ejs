@@ -1,0 +1,18 @@
+<%-include("./partials/headers")-%>
+<head>
+	<title>Songs Results</title>
+</head>
+<body>
+    <% for (const key in ResultSong){%>
+        <form method="post" action="/update">
+            <input type="hidden" value="<%= ResultSong[key].S_ID %>" name="songID" id="songID">
+            <div class="h-5 border-black m-5">
+                <%= key %>
+                <button type="submit"> Update </button>
+            </div>
+        </form>
+    <% } %>
+    <!-- Back Button-->
+    <a href="/search"><input type="button" value="Back"></a>
+</body>
+</html>
