@@ -15,16 +15,14 @@ async function searchSong(doc){
     songs_needed = await client.db("Songs_Needed");
     song = songs_needed.collection("Song");
 
-    test = await song.aggregate([{$match: doc}]);
+    songs = await song.aggregate([{$match: doc}]);
 
     var dict = {};
-    for await (const song of test) {
+    for await (const song of songs) {
         dict[song.S_name] = song;
     }
     return dict;
 };
-
-// async function updateSong()
 
 app.get ("/search", async function(req, res) {
     res.render('myform');
@@ -103,7 +101,7 @@ app.post("/update/formsave", async function(req, res){
         genre.push(ls.G_ID);
     }
 
-    var song = await songCollection.findOneAndUpdate({S_ID: req.body.S_ID}, 
+    await songCollection.findOneAndUpdate({S_ID: req.body.S_ID}, 
         {$set: {
             S_name: req.body.S_name,
             Year: parseInt(req.body.Year),
@@ -115,6 +113,8 @@ app.post("/update/formsave", async function(req, res){
     res.redirect("/search")
 
 })
+
+
 
 app.listen(8082, () => {
     console.log("URL: http://127.0.0.1:8082/search")}

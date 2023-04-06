@@ -3,16 +3,22 @@
 	<title>Songs Results</title>
 </head>
 <body>
-    <% for (const key in ResultSong){%>
-        <form method="post" action="/update">
-            <input type="hidden" value="<%= ResultSong[key].S_ID %>" name="songID" id="songID">
-            <div class="h-5 border-black m-5">
-                <%= key %>
-                <button type="submit"> Update </button>
-            </div>
-        </form>
-    <% } %>
-    <!-- Back Button-->
-    <a href="/search"><input type="button" value="Back"></a>
+    <div class="m-6">
+        <% for (const key in ResultSong){%>
+            <form method="post" action="/update">
+                <input type="hidden" value="<%= ResultSong[key].S_ID %>" name="songID" id="songID">
+                <div class="w-full ring-1 ring-cyan-800 rounded-lg">
+                    <div class="m-2">
+                        <div class="text-2xl font-primary"><%= key %></div>
+                        <div>Released year:  <%= ResultSong[key].Year %></div>
+                        <div>Album: <%= ResultSong[key].album %> </div>
+                    </div>
+                    <button class="ring-1 ring-black rounded-xl px-2 m-2" type="submit"> Update </button>
+                </div>
+            </form>
+        <% } %>
+        <!-- Back Button-->
+        <a href="/search"><input class="ring-1 ring-black px-2 rounded-xl" type="button" value="Back"></a>
+    </div>
 </body>
 </html>
