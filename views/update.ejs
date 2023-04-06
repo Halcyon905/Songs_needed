@@ -5,14 +5,14 @@
 <body>
     <div>
         <form method="post" action="/update/formsave">
-            <div class="text-black m-6">
+            <div class="text-black m-6 text-xl">
                 <input type="hidden" value="<%= song['S_ID'] %>" name="S_ID"/>
-                <div>title: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['S_name'] %>" name="S_name" /></div>
-                <div>genre: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['G_Name'] %>" name="G_name" /></div>
-                <div>artist: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['A_Name'] %>" name="A_name" /> </div>
-                <div>released: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['Year'] %>" name="Year" /></div>
-                <div>album: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" class="w-96" type="text" value="<%= song['album'] %>" name="album" /></div>
-                <button class="ring-1 ring-black rounded-xl px-2 mt-2 bg-green-300" type="submit"> Confirm update </button>
+                <div>Title: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['S_name'] %>" name="S_name" /></div>
+                <div>Genre: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['G_Name'] %>" name="G_name" /></div>
+                <div>Artist: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['A_Name'] %>" name="A_name" /> </div>
+                <div>Released: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['Year'] %>" name="Year" /></div>
+                <div>Album: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" class="w-96" type="text" value="<%= song['album'] %>" name="album" /></div>
+                <button class="ring-1 ring-black rounded-xl px-2 mt-2 bg-green-200" type="submit"> Confirm update </button>
             </div>
         </form>
     </div>
