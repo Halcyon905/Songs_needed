@@ -3,22 +3,34 @@
 	<title>Songs Results</title>
 </head>
 <body>
-    <div class="m-6">
-        <% for (const key in ResultSong){%>
-            <form method="post" action="/update">
-                <input type="hidden" value="<%= ResultSong[key].S_ID %>" name="songID" id="songID">
-                <div class="w-full ring-1 ring-cyan-800 rounded-lg">
-                    <div class="m-2">
-                        <div class="text-2xl font-primary"><%= key %></div>
-                        <div>Released year:  <%= ResultSong[key].Year %></div>
-                        <div>Album: <%= ResultSong[key].album %> </div>
-                    </div>
-                    <button class="ring-1 ring-black rounded-xl px-2 m-2" type="submit"> Update </button>
+    <div class="my-6 mx-40">
+        <% if ( Object.keys(result).length > 0 ) { %>
+        <% for (const key in result){%>
+            <div class="w-full ring-1 ring-cyan-800 rounded-lg">
+                <div class="m-2 pt-3">
+                    <div class="text-2xl font-primary"><%= key %></div>
+                    <div class="text-xl">Released year:  <%= result[key].Year %></div>
+                    <div class="text-xl">Album: <%= result[key].album %> </div>
                 </div>
-            </form>
+                <div class="flex flex-row">
+                    <form method="post" action="/update">
+                        <input type="hidden" value="<%= result[key].S_ID %>" name="songID" id="songID">
+                        <button class="ring-1 ring-black rounded-xl px-2 mt-2 mx-2" type="submit"> Update </button>
+                    </form>
+                    <form method="post" action="/delete">
+                        <input type="hidden" value="<%= result[key].S_ID %>" name="songID" id="songID">
+                        <button class="ring-1 ring-black rounded-xl px-2 mt-2 mx-2 bg-red-700 text-white" type="submit"> Delete </button>
+                    </form>
+                </div>
+            </div>
+        <% } %>
+        <% } else { %>
+            <div class="text-xl text-red-700">
+                No Data
+            </div>
         <% } %>
         <!-- Back Button-->
-        <a href="/search"><input class="ring-1 ring-black px-2 rounded-xl" type="button" value="Back"></a>
+        <a href="/search"><input class="ring-1 ring-black px-2 rounded-xl mt-2" type="button" value="Back"></a>
     </div>
 </body>
 </html>

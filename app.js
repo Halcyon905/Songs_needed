@@ -47,9 +47,7 @@ app.post ("/search/formsave", async function(req, res) {
     }
 
     result = await searchSong(query);
-    res.render("results", {
-        ResultSong: result
-    })
+    res.render("results", {result})
 });
 
 app.post ("/update", async function(req, res){
@@ -76,8 +74,6 @@ app.post ("/update", async function(req, res){
 
     song["A_Name"] =  artist
     song["G_Name"] = genre
-
-    console.log(song)
     res.render("update", {song})
 })
 
@@ -114,6 +110,14 @@ app.post("/update/formsave", async function(req, res){
 
 })
 
+app.post("/delete", async function(req, res) {
+    songs_needed = await client.db("Songs_Needed");
+    songCollection = songs_needed.collection("Song");
+
+    await songCollection.deleteOne({S_ID: req.body.songID})
+
+    res.redirect("/search")
+})
 
 
 app.listen(8082, () => {
