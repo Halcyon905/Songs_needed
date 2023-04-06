@@ -1,0 +1,29 @@
+<%-include("./partials/headers")-%>
+<head>
+    <title>
+        Insert Song
+    </title>
+</head>
+<body>
+    <div class="m-6">
+        <!-- Page header -->
+        <div class="text-3xl font-primary mb-5">
+            Let's <span class="text-cyan-800">Insert</span> Song!
+        </div>
+        <form method="post" action="/insert/formsave">
+            <div class="text-black text-xl">
+                <div>Title: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="" name="S_name" /></div>
+                <div>
+                    Genre: 
+                    <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="" name="G_name" />
+                    <span>  </span>
+                </div>
+                <div>Artist: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="" name="A_name" /> </div>
+                <div>Released: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="" name="Year" /></div>
+                <div>Album: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" class="w-96" type="text" value="" name="album" /></div>
+                <button class="ring-1 ring-black rounded-xl px-2 mt-2 bg-green-200" type="submit"> Insert </button>
+            </div>
+        </form>
+    </div>
+
+</body>

@@ -134,8 +134,13 @@ app.post("/delete", async function(req, res) {
     res.redirect("/search")
 })
 
-app.post("/insert", async function(req, res){
-    
+app.get("/insert", async function(req, res){
+    res.render("insertSong")
+})
+
+// TODO: implement this fucntion
+app.get("/insert/formsave", async function(req, res){
+
 })
 
 
