@@ -163,19 +163,83 @@ app.post("/insert/formsave", async function (req, res) {
     for await (const aname of req.body.A_name.split(',')) {
         var ls = await artistCollection.findOne({ A_Name: aname });
         if (ls == null) {
-            const newArtistCount = await artistCollection.countDocuments() + 1;
-            const newArtistId = newArtistCount.toString().padStart(3, '0');
-            await artistCollection.insertOne({ A_ID: newArtistId, A_Name: aname })
+            
+            // get the latest artist ID by using aggregate()
+            const latestArtistID = await artistCollection.aggregate([
+                {
+                  $group: {
+                    "_id": "MaxID",
+                    "Max": {
+                    // get maximum ID number (latest ID) 
+                      "$max": {
+                        // convert string of ID to int
+                        "$toInt": "$A_ID"
+                      }
+                    }
+                  }
+                }
+              ]);
 
+              // insert new artist into Artist collection
+
+              // access data in latestID
+              for await (const doc of latestArtistID) {
+
+                // create new artist ID from latestID (latestID + 1)
+                const newAID = doc.Max + 1 + "";
+                console.log(newAID);
+
+                // create dictionary of new Artist
+                const newArtist = {
+                    A_ID: newAID,
+                    A_Name: aname
+                }
+
+                // insert new artist into Artist collection
+                await artistCollection.insertOne(newArtist);
+                console.log("Inserted Artist");
+              }
         }
     }
 
     for await (const gname of req.body.G_name.split(',')) {
         var ls = await artistCollection.findOne({ G_name: gname });
         if (ls == null) {
-            const newGenreCount = await genreCollection.countDocuments() + 1;
-            const newGenreId = newGenreCount.toString().padStart(2, '0');
-            await genreCollection.insertOne({ G_ID: newGenreId, G_name: gname })
+            // get the latest genre ID by using aggregate()
+            const latestGenreID = await genreCollection.aggregate([
+                {
+                    $group: {
+                      "_id": "MaxID",
+                      "Max": {
+                        // get maximum ID number (latest ID) 
+                        "$max": {
+                            // convert string of ID to int
+                          "$toInt": "$G_ID"
+                        }
+                      }
+                    }
+                  }
+            ]);
+
+            // insert new genre into Genre collection
+
+            // access data in latestID
+            for await (const doc of latestGenreID) {
+
+                // create new artist ID from latestID (latestID + 1)
+                const newGID = doc.Max + 1 + "";
+                console.log(newGID);
+
+                // create dictionary of new Artist
+                const newGenre = {
+                    G_ID: newGID,
+                    G_name: gname
+                }
+
+                // insert new artist into Artist collection
+                await genreCollection.insertOne(newGenre);
+                console.log("Inserted Genre");
+              }
         }
     }
 
@@ -185,32 +249,40 @@ app.post("/insert/formsave", async function (req, res) {
         artist.push(ls.A_ID);
     }
 
+    console.log(artist);
+
     for await (const gname of req.body.G_name.split(',')) {
         var ls = await genreCollection.findOne({ G_name: gname });
         genre.push(ls.G_ID);
     }
- 
+
+    console.log(genre);
+
+    // insert new song into Song collection
+
     const newSongCount = await songCollection.countDocuments() + 1;
     const newSongId = newSongCount.toString().padStart(3, '0');
 
+    console.log(newSongCount);
+    console.log(newSongId);
 
-    await songCollection.insertOne({
+    const newSong = {
         S_ID: newSongId,
         S_name: req.body.S_name,
         Year: parseInt(req.body.Year),
         album: req.body.album,
         A_ID: artist,
         G_ID: genre
-    });
+    }
 
-
-
-
+    // insert new song into Song collection
+    await songCollection.insertOne(newSong);
+    console.log("Inserted song");
 
     // After inserting the song, redirect to the search page
     res.redirect("/search")
 
-})
+});
 
 
 app.listen(8082, () => {
