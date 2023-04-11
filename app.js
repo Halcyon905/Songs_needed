@@ -158,6 +158,25 @@ app.post("/insert/formsave", async function (req, res) {
     var artist = []
 
     var genre = []
+    // if the inserted artist or genre is not in the database, insert it
+    for await (const aname of req.body.A_name.split(',')) {
+        var ls = await artistCollection.findOne({ A_Name: aname });
+        if (ls == null) {
+            const newArtistCount = await artistCollection.countDocuments() + 1;
+            const newArtistId = newArtistCount.toString().padStart(3, '0');
+            await artistCollection.insertOne({ A_ID: newArtistId, A_Name: aname })
+
+        }
+    }
+
+    for await (const gname of req.body.G_name.split(',')) {
+        var ls = await artistCollection.findOne({ G_name: gname });
+        if (ls == null) {
+            const newGenreCount = await genreCollection.countDocuments() + 1;
+            const newGenreId = newGenreCount.toString().padStart(3, '0');
+            await genreCollection.insertOne({ G_ID: newGenreId, G_name: gname })
+        }
+    }
 
     // find the artist id and genre id based on the name
     for await (const aname of req.body.A_name.split(',')) {
@@ -173,6 +192,8 @@ app.post("/insert/formsave", async function (req, res) {
     const newSongId = newSongCount.toString().padStart(3, '0');
 
     
+
+    // insert the song
     await songCollection.insertOne({
         S_ID: newSongId,
         S_name: req.body.S_name,
@@ -180,7 +201,9 @@ app.post("/insert/formsave", async function (req, res) {
         album: req.body.album,
         A_ID: artist,
         G_ID: genre
-    });
+    })
+
+
 
     // After inserting the song, redirect to the search page
     res.redirect("/search")
