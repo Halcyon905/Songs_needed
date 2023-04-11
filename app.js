@@ -158,6 +158,7 @@ app.post("/insert/formsave", async function (req, res) {
     var artist = []
 
     var genre = []
+
     // if the inserted artist or genre is not in the database, insert it
     for await (const aname of req.body.A_name.split(',')) {
         var ls = await artistCollection.findOne({ A_Name: aname });
@@ -173,7 +174,7 @@ app.post("/insert/formsave", async function (req, res) {
         var ls = await artistCollection.findOne({ G_name: gname });
         if (ls == null) {
             const newGenreCount = await genreCollection.countDocuments() + 1;
-            const newGenreId = newGenreCount.toString().padStart(3, '0');
+            const newGenreId = newGenreCount.toString().padStart(2, '0');
             await genreCollection.insertOne({ G_ID: newGenreId, G_name: gname })
         }
     }
