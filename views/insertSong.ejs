@@ -10,7 +10,7 @@
         <div class="text-3xl font-primary mb-5">
             Let's <span class="text-cyan-800">Insert</span> Song!
         </div>
-        <form method="post" action="/insert/formsave">
+        <form method="post" action="/insert/formsave" onsubmit="return checkForm();">
             <div class="text-black text-xl">
                 <div>Title: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="" name="S_name" /></div>
                 <div>
@@ -19,7 +19,7 @@
                     <span>  </span>
                 </div>
                 <div>Artist: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="" name="A_name" /> </div>
-                <div>Released: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="" name="Year" /></div>
+                <div>Released: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="number" value="" name="Year" min="1980" /></div>
                 <div>Album: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" class="w-96" type="text" value="" name="album" /></div>
                 <button class="ring-1 ring-black rounded-xl px-2 mt-2 bg-green-200" type="submit"> Insert </button>
             </div>
@@ -27,3 +27,20 @@
     </div>
 
 </body>
+
+<script>
+    function checkForm() {
+        const sName = document.getElementsByName('S_name')[0].value;
+        const year = document.getElementsByName('Year')[0].value;
+        const album = document.getElementsByName('album')[0].value;
+        const aName = document.getElementsByName('A_name')[0].value;
+        const gName = document.getElementsByName('G_name')[0].value;
+
+        if (sName.trim() === "" || year.trim() === "" || album.trim() === "" || aName.trim() === "" || gName.trim() === "") {
+            window.alert("Please fill in all of the blanks!");
+            return false;
+        }
+
+        return true;
+    }
+</script>

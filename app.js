@@ -189,12 +189,11 @@ app.post("/insert/formsave", async function (req, res) {
         var ls = await genreCollection.findOne({ G_name: gname });
         genre.push(ls.G_ID);
     }
+ 
     const newSongCount = await songCollection.countDocuments() + 1;
     const newSongId = newSongCount.toString().padStart(3, '0');
 
-    
 
-    // insert the song
     await songCollection.insertOne({
         S_ID: newSongId,
         S_name: req.body.S_name,
@@ -202,7 +201,9 @@ app.post("/insert/formsave", async function (req, res) {
         album: req.body.album,
         A_ID: artist,
         G_ID: genre
-    })
+    });
+
+
 
 
 
