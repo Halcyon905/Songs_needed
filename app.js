@@ -264,8 +264,12 @@ app.post("/insert/formsave", async function (req, res) {
             for await (const aname of req.body.A_name.split(',')) {
                 var ls2 = await artistCollection.findOne({ A_Name: aname })
                 if (ls2 != null) {
-                    console.log("The song " + sname + " with the artist named " + aname + "  is already inserted in" );
-                } }
+                    for await (const albumname of req.body.album.split(',')) {
+                        var ls3 = await songCollection.findOne({ album: albumname })
+                        if (ls3 != null) {
+                            console.log("The song " + sname + " with the artist named " + aname + " and album "+ albumname +" is already inserted in" );
+                        } 
+                } } }
         } else {
                 // insert new song into Song collection
                 const newSongCount = await songCollection.countDocuments() + 1;
