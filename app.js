@@ -258,26 +258,39 @@ app.post("/insert/formsave", async function (req, res) {
 
     console.log(genre);
 
-    // insert new song into Song collection
-
-    const newSongCount = await songCollection.countDocuments() + 1;
-    const newSongId = newSongCount.toString().padStart(3, '0');
-
-    console.log(newSongCount);
-    console.log(newSongId);
-
-    const newSong = {
-        S_ID: newSongId,
-        S_name: req.body.S_name,
-        Year: parseInt(req.body.Year),
-        album: req.body.album,
-        A_ID: artist,
-        G_ID: genre
+    for await (const sname of req.body.S_name.split(',')) {
+        var ls = await songCollection.findOne({ S_name: sname });
+        if (ls != null) {
+            for await (const aname of req.body.A_name.split(',')) {
+                var ls2 = await artistCollection.findOne({ A_Name: aname })
+                if (ls2 != null) {
+                    console.log("The song " + sname + " with the artist named " + aname + "  is already inserted in" );
+                } }
+        } else {
+                // insert new song into Song collection
+                const newSongCount = await songCollection.countDocuments() + 1;
+                const newSongId = newSongCount.toString().padStart(3, '0');
+    
+                console.log(newSongCount);
+                console.log(newSongId);
+    
+    
+                const newSong = {
+                    S_ID: newSongId,
+                    S_name: req.body.S_name,
+                    Year: parseInt(req.body.Year),
+                    album: req.body.album,
+                    A_ID: artist,
+                    G_ID: genre
+                }
+    
+                // insert new song into Song collection
+                await songCollection.insertOne(newSong);
+                console.log("Inserted song");
+            }
     }
-
-    // insert new song into Song collection
-    await songCollection.insertOne(newSong);
-    console.log("Inserted song");
+    
+    
 
     // After inserting the song, redirect to the search page
     res.redirect("/search")
