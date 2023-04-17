@@ -39,7 +39,7 @@ async function searchSong(doc) {
         }
         song["A_Name"] = artist
         song["G_Name"] = genre
-        dict[song.S_name] = song;
+        dict[song.S_ID] = song;
     }
     return dict;
 };
