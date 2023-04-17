@@ -229,10 +229,14 @@ app.post("/insert/formsave", async function (req, res) {
 
     var genre = []
 
+    var new_song = false;
+
     // if the inserted artist or genre is not in the database, insert it
     for await (const aname of req.body.A_name.split(',')) {
         var ls = await artistCollection.findOne({ A_Name: aname });
         if (ls == null) {
+
+            new_song = true;
             
             // get the latest artist ID by using aggregate()
             const latestArtistID = await artistCollection.aggregate([
@@ -273,6 +277,9 @@ app.post("/insert/formsave", async function (req, res) {
     for await (const gname of req.body.G_name.split(',')) {
         var ls = await genreCollection.findOne({ G_name: gname });
         if (ls == null) {
+
+            new_song = true;
+
             // get the latest genre ID by using aggregate()
             const latestGenreID = await genreCollection.aggregate([
                 {
@@ -320,39 +327,24 @@ app.post("/insert/formsave", async function (req, res) {
         genre.push(ls.G_ID);
     }
 
-    for await (const sname of req.body.S_name.split(',')) {
-        var ls = await songCollection.findOne({ S_name: sname });
-        if (ls != null) {
-            for await (const aname of req.body.A_name.split(',')) {
-                var ls2 = await artistCollection.findOne({ A_Name: aname })
-                if (ls2 != null) {
-                    for await (const albumname of req.body.album.split(',')) {
-                        var ls3 = await songCollection.findOne({ album: albumname })
-                        if (ls3 != null) {
-                            console.log("The song " + sname + " with the artist named " + aname + " and album "+ albumname +" is already inserted in" );
-                        } 
-                } } }
-        } else {
-                // insert new song into Song collection
-                const newSongCount = await songCollection.countDocuments() + 1;
-                const newSongId = newSongCount.toString().padStart(3, '0');
-    
-                const newSong = {
-                    S_ID: newSongId,
-                    S_name: req.body.S_name,
-                    Year: parseInt(req.body.Year),
-                    album: req.body.album,
-                    A_ID: artist,
-                    G_ID: genre
-                }
-    
-                // insert new song into Song collection
-                await songCollection.insertOne(newSong);
-            }
-    }
-    
-    
+    if (new_song) {
+        // insert new song into Song collection
+        const newSongCount = await songCollection.countDocuments() + 1;
+        const newSongId = newSongCount.toString().padStart(3, '0');
 
+        const newSong = {
+            S_ID: newSongId,
+            S_name: req.body.S_name,
+            Year: parseInt(req.body.Year),
+            album: req.body.album,
+            A_ID: artist,
+            G_ID: genre
+        }
+
+        // insert new song into Song collection
+        await songCollection.insertOne(newSong);
+        }
+    
     // After inserting the song, redirect to the search page
     res.redirect("/search")
 });
