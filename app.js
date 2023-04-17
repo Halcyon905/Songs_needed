@@ -104,7 +104,45 @@ app.post("/update/formsave", async function (req, res) {
 
     for await (const aname of req.body.A_name.split(',')) {
         var ls = await artistCollection.findOne({ A_Name: aname });
-        artist.push(ls.A_ID);
+        if (ls == null) {
+            // get the latest artist ID by using aggregate()
+            const latestArtistID = await artistCollection.aggregate([
+                {
+                  $group: {
+                    "_id": "MaxID",
+                    "Max": {
+                    // get maximum ID number (latest ID) 
+                      "$max": {
+                        // convert string of ID to int
+                        "$toInt": "$A_ID"
+                      }
+                    }
+                  }
+                }
+              ]);
+
+              // insert new artist into Artist collection
+
+              // access data in latestID
+              for await (const doc of latestArtistID) {
+
+                // create new artist ID from latestID (latestID + 1)
+                const newAID = doc.Max + 1 + "";
+                console.log(newAID);
+
+                // create dictionary of new Artist
+                const newArtist = {
+                    A_ID: newAID,
+                    A_Name: aname
+                }
+
+                // insert new artist into Artist collection
+                await artistCollection.insertOne(newArtist);
+                console.log("Inserted Artist");
+              }
+        } else {
+            artist.push(ls.A_ID);
+        }
     }
 
     for await (const gname of req.body.G_name.split(',')) {

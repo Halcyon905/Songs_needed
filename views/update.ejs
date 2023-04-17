@@ -1,6 +1,6 @@
 <%-include("./partials/headers")-%>
 <head>
-    <title> Update Songs</title>
+    <title>Update Song</title>
 </head>
 <body>
     <div class="m-6">
@@ -17,6 +17,7 @@
                 <div>Released: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" type="text" value="<%= song['Year'] %>" name="Year" /></div>
                 <div>Album: <input class="ring-1 ring-black rounded-xl w-96 m-1 px-2" class="w-96" type="text" value="<%= song['album'] %>" name="album" /></div>
                 <button class="ring-1 ring-black rounded-xl px-2 mt-2 bg-yellow-100" type="submit"> Confirm update </button>
+                <a href="/search"><input class="ring-1 ring-black bg-cyan-800 text-white px-3 rounded-xl mt-2 mx-2" type="button" value="Back"></a>
             </div>
         </form>
     </div>
