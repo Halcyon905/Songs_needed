@@ -327,7 +327,7 @@ app.post("/insert/formsave", async function (req, res) {
         genre.push(ls.G_ID);
     }
 
-    if (new_song || songCollection.findOne({ S_name: req.body.S_name }) == null) {
+    if (new_song || songCollection.findOne({ S_name: req.body.S_name })) {
         // insert new song into Song collection
         const newSongCount = await songCollection.countDocuments() + 1;
         const newSongId = newSongCount.toString().padStart(3, '0');
