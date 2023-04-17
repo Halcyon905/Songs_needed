@@ -25,10 +25,16 @@ async function searchSong(doc) {
         var genre = []
         for await (const aid of song["A_ID"]) {
             var ls = await artistCollection.findOne({ A_ID: aid });
+            if(ls == null) {
+                continue;
+            }
             artist.push(ls.A_Name);
         }
         for await (const gid of song["G_ID"]) {
             var ls = await genreCollection.findOne({ G_ID: gid })
+            if(ls == null) {
+                continue;
+            }
             genre.push(ls.G_name)
         }
         song["A_Name"] = artist
@@ -62,7 +68,6 @@ app.post("/search/formsave", async function (req, res) {
 
     result = await searchSong(query);
     res.render("results", { result })
-    console.log(result)
 });
 
 app.post("/update", async function (req, res) {
@@ -124,11 +129,10 @@ app.post("/update/formsave", async function (req, res) {
               // insert new artist into Artist collection
 
               // access data in latestID
-              for await (const doc of latestArtistID) {
+            for await (const doc of latestArtistID) {
 
                 // create new artist ID from latestID (latestID + 1)
                 const newAID = doc.Max + 1 + "";
-                console.log(newAID);
 
                 // create dictionary of new Artist
                 const newArtist = {
@@ -138,7 +142,7 @@ app.post("/update/formsave", async function (req, res) {
 
                 // insert new artist into Artist collection
                 await artistCollection.insertOne(newArtist);
-                console.log("Inserted Artist");
+                artist.push(newAID);
               }
         } else {
             artist.push(ls.A_ID);
@@ -147,7 +151,35 @@ app.post("/update/formsave", async function (req, res) {
 
     for await (const gname of req.body.G_name.split(',')) {
         var ls = await genreCollection.findOne({ G_name: gname });
-        genre.push(ls.G_ID);
+        if (ls == null) {
+            const latestGenreID = await genreCollection.aggregate([
+                {
+                  $group: {
+                    "_id": "MaxID",
+                    "Max": {
+                      "$max": {
+                        "$toInt": "$A_ID"
+                      }
+                    }
+                  }
+                }
+              ]);
+
+            for await (const doc of latestGenreID) {
+
+                const newGID = doc.Max + 1 + "";
+
+                const newGenre = {
+                    G_ID: newGID,
+                    G_name: gname
+                }
+
+                await genreCollection.insertOne(newGenre);
+                genre.push(newGID);
+              }
+        } else {
+            genre.push(ls.G_ID);
+        }
     }
 
     await songCollection.findOneAndUpdate({ S_ID: req.body.S_ID },
@@ -225,7 +257,6 @@ app.post("/insert/formsave", async function (req, res) {
 
                 // create new artist ID from latestID (latestID + 1)
                 const newAID = doc.Max + 1 + "";
-                console.log(newAID);
 
                 // create dictionary of new Artist
                 const newArtist = {
@@ -235,13 +266,12 @@ app.post("/insert/formsave", async function (req, res) {
 
                 // insert new artist into Artist collection
                 await artistCollection.insertOne(newArtist);
-                console.log("Inserted Artist");
               }
         }
     }
 
     for await (const gname of req.body.G_name.split(',')) {
-        var ls = await artistCollection.findOne({ G_name: gname });
+        var ls = await genreCollection.findOne({ G_name: gname });
         if (ls == null) {
             // get the latest genre ID by using aggregate()
             const latestGenreID = await genreCollection.aggregate([
@@ -266,7 +296,6 @@ app.post("/insert/formsave", async function (req, res) {
 
                 // create new artist ID from latestID (latestID + 1)
                 const newGID = doc.Max + 1 + "";
-                console.log(newGID);
 
                 // create dictionary of new Artist
                 const newGenre = {
@@ -276,7 +305,6 @@ app.post("/insert/formsave", async function (req, res) {
 
                 // insert new artist into Artist collection
                 await genreCollection.insertOne(newGenre);
-                console.log("Inserted Genre");
               }
         }
     }
@@ -287,14 +315,10 @@ app.post("/insert/formsave", async function (req, res) {
         artist.push(ls.A_ID);
     }
 
-    console.log(artist);
-
     for await (const gname of req.body.G_name.split(',')) {
         var ls = await genreCollection.findOne({ G_name: gname });
         genre.push(ls.G_ID);
     }
-
-    console.log(genre);
 
     for await (const sname of req.body.S_name.split(',')) {
         var ls = await songCollection.findOne({ S_name: sname });
@@ -313,10 +337,6 @@ app.post("/insert/formsave", async function (req, res) {
                 const newSongCount = await songCollection.countDocuments() + 1;
                 const newSongId = newSongCount.toString().padStart(3, '0');
     
-                console.log(newSongCount);
-                console.log(newSongId);
-    
-    
                 const newSong = {
                     S_ID: newSongId,
                     S_name: req.body.S_name,
@@ -328,7 +348,6 @@ app.post("/insert/formsave", async function (req, res) {
     
                 // insert new song into Song collection
                 await songCollection.insertOne(newSong);
-                console.log("Inserted song");
             }
     }
     
@@ -336,7 +355,6 @@ app.post("/insert/formsave", async function (req, res) {
 
     // After inserting the song, redirect to the search page
     res.redirect("/search")
-
 });
 
 
